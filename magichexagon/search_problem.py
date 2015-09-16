@@ -3,14 +3,7 @@ __author__ = 'Mart Aarma'
 import search
 
 class MagicHexagonProblem(search.Problem):
-    """The problem of placing N queens on an NxN board with none attacking
-    each other.  A state is represented as an N-element array, where
-    a value of r in the c-th entry means there is a queen at column c,
-    row r, and a value of None means that the c-th column has not been
-    filled in yet.  We fill in columns left to right.
-    >>> depth_first_tree_search(MagicHexagonProblem(8))
-    <Node [7, 3, 0, 2, 5, 1, 6, 4]>
-    """
+
     def __init__(self):
         self.N = 19
         self.initial = [0] * self.N
@@ -28,35 +21,33 @@ class MagicHexagonProblem(search.Problem):
                 return ["incCurrVal"]
 
     def result(self, state, action):
-        print(state)
         index = state.index(0)
         currentIndex = index - 1;
         if action == "startNext":
             state[index] = self.findNextElement(state, None)
         elif action == "incCurrVal":
-            state[currentIndex] =  self.findNextElement(state, state[currentIndex])
+            state[currentIndex] = self.findNextElement(state, state[currentIndex])
         else:
-            state[index - 2] = self.getMinElement(state)
-            state[currentIndex] = self.getMinElement(state)
-        print(state)
-        print("\n----------")
+            self.incPrevValue(state, currentIndex)
         return state
 
+    def incPrevValue(self, state, index):
+        state[index] = 0
+        elem = state[index - 1]
+        newValue = self.findNextElement(state, elem)
+        if elem == newValue:
+            self.incPrevValue(state, index - 1)
+        else:
+            state[index - 1] = newValue
 
     def valueIsMaxAvailValue(self, state, value):
-         for e in range(self.N + 1):
+         for e in range(1, self.N + 1):
              if e not in state and (e > value):
                  return False
          return True
 
-    def getMinElement(self, state):
-         for e in range(self.N + 1):
-             if e not in state:
-                 return e
-         return -1
-
     def findNextElement(self, state, min):
-         for e in range(self.N + 1):
+         for e in range(1, self.N + 1):
              if e not in state and (min is None or e > min):
                  return e
          return min
@@ -96,6 +87,8 @@ class MagicHexagonProblem(search.Problem):
         i=state[17];
         j=state[18];
 
+        #3 17 18 11 9 14 15 13 10 12 16 19 7 1 6 8 4 2 5
+
         if completeCheck and state[-1] == 0:
             return False
 
@@ -114,9 +107,8 @@ class MagicHexagonProblem(search.Problem):
                                                         if self.checkVariables5(a,e,j,o,t,completeCheck):
                                                             if self.checkVariables4(d,i,n,s,completeCheck):
                                                                 if self.checkVariables3(h , m , r,completeCheck):
-                                                                    print("true: ", state)
                                                                     return True;
-        print("false: ", state)
+
         return False
 
     def checkVariables3(self, a,b,c, completeCheck):

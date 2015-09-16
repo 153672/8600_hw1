@@ -96,7 +96,8 @@ class Node:
 
     def solution(self):
         "Return the sequence of actions to go from the root to this node."
-        return [node.action for node in self.path()[1:]]
+        return self.state
+        #return [node.action for node in self.path()[1:]]
 
     def path(self):
         "Return a list of nodes forming the path from the root to this node."
