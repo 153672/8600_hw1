@@ -22,9 +22,9 @@ class MagicHexagonProblem(search.Problem):
         index = state.index(0)
         currentIndex = index - 1;
         if action == "startNext":
-            state[state.index(0)] = self.findNextElement(state, None)
+            state[state.index(0)] = self.findNextElement(state)
         elif action == "incCurrVal":
-            state[currentIndex] = self.findNextElement(state, state[currentIndex])
+            state[currentIndex] = self.findNextBiggerValue(state, state[currentIndex])
         else:
             self.incPrevValue(state, currentIndex)
         return state
@@ -32,21 +32,27 @@ class MagicHexagonProblem(search.Problem):
     def incPrevValue(self, state, index):
         state[index] = 0
         elem = state[index - 1]
-        newValue = self.findNextElement(state, elem)
+        newValue = self.findNextBiggerValue(state, elem)
         if elem == newValue:
             self.incPrevValue(state, index - 1)
         else:
             state[index - 1] = newValue
 
     def valueIsMaxAvailValue(self, state, value):
-        for e in range(1, 20):
-            if (e > value) and e not in state:
+        for e in range(value + 1, 20):
+            if e not in state:
                 return False
         return True
 
-    def findNextElement(self, state, min):
+    def findNextBiggerValue(self, state, min):
+        for e in range(min, 20):
+            if e not in state:
+                return e
+        return min
+
+    def findNextElement(self, state):
         for e in range(1, 20):
-            if (min is None or e > min) and e not in state:
+            if e not in state:
                 return e
         return min
 
