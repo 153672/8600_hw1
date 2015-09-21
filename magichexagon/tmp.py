@@ -37,33 +37,39 @@ class MagicHexagonProblem(search.Problem):
         # i,17 = 16,17,18
         # j,18 = 17,18,0
 
-        self.initial = [0] * 19
-        self.initial[0] = 1
-        self.initial = tuple(self.initial)
+        self.initial = tuple([0] * 19)
+        self.index = 0;
 
+    # tagastab v6imalikud v22rtused indeksi jaoks ja otsustab milline on j2rmine indeks
     def actions(self, state):
-        index = state.index(0)-1;
-        if index > 10:
-            print(state)
+        #if state[0] == 1 and state[1] == 18 and state[2] == 19 and state[3] == 17:
+        print(state)
+
+        if state[0] == 0:
+            return [e for e in range(1,20)]
+
         if self.partialSolutionIsValid(state):
-            return [index + 1, index]
+            self.index = state.index(0)
+            e = [e for e in range(1,20) if e not in state]
+            return e
         else:
-            if index in (2,4,6,8,10):
-                if self.valueIsMaxAvailValue(state, state[index]):
-                    return [index,index-1]
-                else:
-                    return [index]
+            if self.valueIsMaxAvailValue(state, state[self.index]):
+                return [0]
             else:
-                return [index-1]
+                v = state[self.index];
+                e = [e for e in range(1,20) if e > v and e not in state]
+                return e
 
-    def result(self, state, index):
+    def result(self, state, action):
         localstate = list(state)
-        for i in range(index+1, 19):
-            localstate[i] = 0
+        if action == 0:
+            self.index = max(0, self.index - 1)
+            localstate[self.index] = 0
+        else:
+            localstate[self.index] = action
 
-        localstate[index] = self.findNextBiggerValue(localstate, localstate[index])
+        #print("result:", localstate)
         return tuple(localstate)
-
 
     def valueIsMaxAvailValue(self, state, value):
          for e in range(1, 20):
@@ -163,5 +169,5 @@ class MagicHexagonProblem(search.Problem):
 
 nq1 = MagicHexagonProblem();
 start_time = time.time()
-print(search.breadth_first_search(nq1).solution())
+print(search.depth_first_graph_search(nq1).solution())
 print("--- %s seconds ---" % (time.time() - start_time))
