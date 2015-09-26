@@ -1,81 +1,58 @@
 import search
 import time
-import random
 
 __author__ = 'Mart Aarma'
 
-class MagicHexagonProblem(search.Problem):
 
+class MagicHexagonProblem(search.Problem):
     def __init__(self):
 
         # idx 0-> /a|b|c\
         #        /d|e|f|g\
-         #      /h|i|j|k|l\
+        #       /h|i|j|k|l\
         #        \m|n|o|p/
         #         \r|s|t/
 
         # idx 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
         #     a,b,c,g,l,p,t,s,r,m,h, d, e, f, k, o, n, i, j
+        # (18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 3, 17, 1, 6, 8, 4, 2, 7, 5)
 
-        # Before going further to inner circle the outer rows of 3 must be correct
-
+        self.allNumbers = [19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
         self.initial = tuple([0] * 19)
-        self.idx = 0;
-        self.c = 0
 
-    # tagastab v6imalikud v22rtused indeksi jaoks ja otsustab milline on j2rmine indeks
     def actions(self, state):
-
         if state[0] == 0:
-            return [e for e in reversed(range(1,20))]
+            return self.allNumbers
 
-        if self.partialSolutionIsValid(state):
-            e = [e for e in reversed(range(1,20)) if e not in state]
-            return e
+        if self.check_partial_solution(state):
+            return [e for e in self.allNumbers if e not in state]
         else:
-            if state[-1] == 0:
-                idx = state.index(0) - 1
-            else:
-                idx = 18
-
-            if idx in (3,5,7,9,11) and not self.checkRowOf3(state, idx):
-                return []
-
-            v = state[idx];
-            e = [e for e in reversed(range(1,20)) if e > v and e not in state]
-            return e
+            return []
 
     def result(self, state, action):
         localstate = list(state)
-        if action == 0:
-            localstate[state.index(0) - 1] = 0
-        else:
-            localstate[state.index(0)] = action
-
-        #print("result:", localstate)
+        localstate[state.index(0)] = action
         return tuple(localstate)
 
-    def valueIsMaxAvailValue(self, state, value):
-         for e in range(1, 20):
-             if e not in state and (e > value):
-                 return False
-         return True
-
-    def findNextBiggerValue(self, state, min):
-        for e in range(min, 20):
-            if e not in state:
-                return e
-        return min
-
     def goal_test(self, state):
-        return self.checkSolution(state, True)
+        return self.check_solution(state, True)
 
-    def partialSolutionIsValid(self, state):
-        return self.checkSolution(state, False)
+    def check_partial_solution(self, state):
+        idx = state.index(0) - 1
 
-    def checkSolution(self, state, completeCheck):
+        if idx in (2, 4, 6, 8, 10):
+            return state[idx - 2] + state[idx - 1] + state[idx] == 38
+        elif idx == 11:
+            return state[8] + state[9] + state[10] == 38 and state[10] + state[11] + state[0] == 38
+        else:
+            if idx > 11:
+                return self.check_solution(state, False)
+            else:
+                return True
 
-        if completeCheck and state[-1] == 0:
+    def check_solution(self, state, goalCheck):
+
+        if goalCheck and state[-1] == 0:
             return False
 
         a = state[0]
@@ -98,68 +75,28 @@ class MagicHexagonProblem(search.Problem):
         i = state[17]
         j = state[18]
 
-        rows3Complete = False;
-
-        if not completeCheck:
-            if self.checkRowsOf3(a, b, c, completeCheck):
-                if self.checkRowsOf3(c, g, l, completeCheck):
-                    if self.checkRowsOf3(l, p, t, completeCheck):
-                        if self.checkRowsOf3(t, s, r, completeCheck):
-                            if self.checkRowsOf3(r, m, h, completeCheck):
-                                if self.checkRowsOf3(h, d, a, completeCheck):
-                                    rows3Complete = True
-
-        if completeCheck or rows3Complete:
-            if self.checkRowsOf4(d, e, f, g, completeCheck):
-                if self.checkRowsOf4(g, k, o, s, completeCheck):
-                    if self.checkRowsOf4(b, f, k, p, completeCheck):
-                        if self.checkRowsOf4(m, n, o, p, completeCheck):
-                            if self.checkRowsOf4(b, e, i, m, completeCheck):
-                                if self.checkRowsOf4(d, i, n, s, completeCheck):
-                                    if self.checkRowsOf5(c, f, j, n, r, completeCheck):
-                                        if self.checkRowsOf5(h, i, j, k, l, completeCheck):
-                                            if self.checkRowsOf5(a, e, j, o, t, completeCheck):
-                                                return True
+        if self.check_rows_of_4(d, e, f, g):
+            if self.check_rows_of_4(g, k, o, s):
+                if self.check_rows_of_4(b, f, k, p):
+                    if self.check_rows_of_4(m, n, o, p):
+                        if self.check_rows_of_4(b, e, i, m):
+                            if self.check_rows_of_4(d, i, n, s):
+                                if self.check_rows_of_5(c, f, j, n, r):
+                                    if self.check_rows_of_5(h, i, j, k, l):
+                                        if self.check_rows_of_5(a, e, j, o, t):
+                                            return True
 
         return False
 
-    def checkRowOf3(self, state, index):
-        if state[index-3] + state[index - 2] + state[index-1] == 38:
+    def check_rows_of_4(self, a, b, c, d):
+        if b == 0 or c == 0 or a == 0 or d == 0:
             return True
-        return False
+        return a + b + c + d == 38
 
-    def checkRowsOf3(self, a, b, c, completeCheck):
-        if (a == 0 or b == 0 or c == 0):
-            if completeCheck:
-                return False
-            else:
-                return True
-
-        if a + b + c == 38:
+    def check_rows_of_5(self, b, c, d, a, e):
+        if a == 0 or b == 0 or c == 0 or d == 0 or e == 0:
             return True
-        return False
-
-    def checkRowsOf4(self, a, b, c, d, completeCheck):
-        if (a == 0 or b == 0 or c == 0 or d == 0):
-            if completeCheck:
-                return False
-            else:
-                return True
-
-        if a + b + c + d == 38:
-            return True
-        return False
-
-    def checkRowsOf5(self, a, b, c, d, e, completeCheck):
-        if (a == 0 or b == 0 or c == 0 or d == 0 or e == 0):
-            if completeCheck:
-                return False
-            else:
-                return True
-
-        if a + b + c + d + e == 38:
-            return True
-        return False
+        return a + b + c + d + e == 38
 
 
 nq1 = MagicHexagonProblem();
