@@ -19,8 +19,10 @@ class MagicHexagonProblem(search.Problem):
 
         self.allNumbers = [19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
         self.initial = tuple([0] * 19)
+        self.infinity = 1.0e400
 
     def actions(self, state):
+        # print(state)
         if state[0] == 0:
             return self.allNumbers
 
@@ -33,6 +35,12 @@ class MagicHexagonProblem(search.Problem):
         localstate = list(state)
         localstate[state.index(0)] = action
         return tuple(localstate)
+
+    def h(self, node):
+        s = 0
+        for e in node.state:
+            s += e;
+        return 190 - s;
 
     def goal_test(self, state):
         return self.check_solution(state, True)
@@ -101,5 +109,5 @@ class MagicHexagonProblem(search.Problem):
 
 nq1 = MagicHexagonProblem();
 start_time = time.time()
-print(search.depth_first_graph_search(nq1).solution())
+print(search.greedy_best_first_graph_search(nq1, nq1.h).solution())
 print("--- %s seconds ---" % (time.time() - start_time))
