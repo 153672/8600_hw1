@@ -26,7 +26,6 @@ class MagicHexagonProblem(search.Problem):
     # tagastab v6imalikud v22rtused indeksi jaoks ja otsustab milline on j2rmine indeks
     def actions(self, state):
 
-
         if state[0] == 0:
             return [e for e in reversed(range(1,20))]
 
@@ -42,12 +41,9 @@ class MagicHexagonProblem(search.Problem):
             if idx in (3,5,7,9,11) and not self.checkRowOf3(state, idx):
                 return []
 
-            if self.valueIsMaxAvailValue(state, state[idx]):
-                return []
-            else:
-                v = state[idx];
-                e = [e for e in reversed(range(1,20)) if e > v and e not in state]
-                return e
+            v = state[idx];
+            e = [e for e in reversed(range(1,20)) if e > v and e not in state]
+            return e
 
     def result(self, state, action):
         localstate = list(state)
