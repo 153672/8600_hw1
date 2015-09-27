@@ -1,0 +1,123 @@
+depth_first_graph_search
+(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)
+--- 9.60899996758 seconds ---
+
+breadth_first_tree_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- 89.743999958 seconds ---
+
+iterative_deepening_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- 432.546999931 seconds ---
+
+greedy_best_first_graph_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- 50.254999876 seconds ---
+
+recursive_best_first_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- 10.2969999313 seconds ---
+
+astar_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- 51.0370001793 seconds ---
+
+
+
+
+--------------------------------------------------------------------------
+
+
+
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 5.1890001297 seconds ---
+
+
+
+
+
+
+
+
+breadth_first_tree_search(problem)
+depth_first_tree_search(problem)
+depth_first_graph_search(problem)
+breadth_first_search(problem)
+best_first_graph_search(problem)
+
+best_first_graph_search(problem, f) <- no result
+uniform_cost_search(problem)
+depth_limited_search(problem, limit=50)
+iterative_deepening_search(problem)
+
+greedy_best_first_graph_search = best_first_graph_search
+astar_search(problem, h=None)
+recursive_best_first_search(problem, h=None)
+hill_climbing(problem)
+simulated_annealing(problem, schedule=exp_schedule())
+
+
+
+depth_first_tree_search
+(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)
+--- Total 2.02199983597 seconds ---
+
+depth_limited_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 3.20700001717 seconds ---
+
+
+depth_first_graph_search
+(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)
+--- Total 9.64700007439 seconds ---
+
+breadth_first_tree_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 69.9560000896 seconds ---
+
+
+iterative_deepening_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 366.006000042 seconds ---
+
+recursive_best_first_search
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 5.30800008774 seconds ---
+
+
+
+greedy_best_first_graph_search  h1!!
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 32.3099999428 seconds ---
+
+recursive_best_first_search h1!!
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 6.73500013351 seconds ---
+
+astar_search h1!!
+(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)
+--- Total 33.2109999657 seconds ---
+
+
+
+
+Searcher                      Result
+depth_first_tree_search       <357559/357560/357610/   0/(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)/time: 2.36299991608 s>
+depth_limited_search          <546507/546508/546635/   0/(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)/time: 3.75500011444 s>
+depth_first_graph_search      <357559/357560/357610/   0/(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)/time: 9.80099987984 s>
+recursive_best_first_search   <301842/301843/498683/498684/(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)/time: 5.83899998665 s>
+breadth_first_tree_search     <7449222/7449223/7449233/   0/(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)/time: 76.7910001278 s>
+iterative_deepening_search    <57243326/64692549/64692657/   0/(18, 17, 3, 19, 16, 12, 10, 13, 15, 14, 9, 11, 1, 7, 2, 4, 8, 6, 5)/time: 432.287999868 s>
+--- Total 530.836999893 seconds ---
+
+depth_limited_search
+(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)
+--- Total 2.04999995232 seconds ---
+
+recursive_best_first_search
+(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)
+--- Total 3.67499995232 seconds ---
+
+breadth_first_tree_search
+(3, 17, 18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 7, 1, 6, 8, 4, 2, 5)
+--- Total 69.5939998627 seconds ---
