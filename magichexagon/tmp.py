@@ -5,7 +5,8 @@ __author__ = 'Mart Aarma'
 
 
 class MagicHexagonProblem(search.Problem):
-    def __init__(self):
+
+    def __init__(self, allNumbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]):
 
         # idx 0-> /a|b|c\
         #        /d|e|f|g\
@@ -17,7 +18,7 @@ class MagicHexagonProblem(search.Problem):
         #     a,b,c,g,l,p,t,s,r,m,h, d, e, f, k, o, n, i, j
         # (18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 3, 17, 1, 6, 8, 4, 2, 7, 5)
         # [19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-        self.allNumbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]
+        self.allNumbers = allNumbers
         self.initial = tuple([0] * 19)
 
     def actions(self, state):
@@ -192,6 +193,8 @@ def compare_searchers(problems, header,
         return p
     table = [[search.name(s)] + [do(s, p) for p in problems] for s in searchers]
     search.print_table(table, header)
+
+reversedNumbers = [19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
 
 mhp = MagicHexagonProblem()
 start_time = time.time()
