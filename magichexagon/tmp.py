@@ -1,12 +1,13 @@
 import search
 import time
+import analysis
 
 __author__ = 'Mart Aarma'
 
 
 class MagicHexagonProblem(search.Problem):
 
-    def __init__(self, allNumbers = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19]):
+    def __init__(self, allNumbers=None):
 
         # idx 0-> /a|b|c\
         #        /d|e|f|g\
@@ -17,7 +18,9 @@ class MagicHexagonProblem(search.Problem):
         # idx 0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18
         #     a,b,c,g,l,p,t,s,r,m,h, d, e, f, k, o, n, i, j
         # (18, 11, 9, 14, 15, 13, 10, 12, 16, 19, 3, 17, 1, 6, 8, 4, 2, 7, 5)
-        # [19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
+
+        if not allNumbers:
+            allNumbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
         self.allNumbers = allNumbers
         self.initial = tuple([0] * 19)
 
@@ -53,7 +56,8 @@ class MagicHexagonProblem(search.Problem):
         localstate[state.index(0)] = action
         return tuple(localstate)
 
-    def h(self, node):
+    @staticmethod
+    def h(node):
         state = node.state
         s = sum(state)
         h = state[10]
@@ -71,10 +75,12 @@ class MagicHexagonProblem(search.Problem):
         else:
             p = 0
 
+        # 0 <= p <= 20
         return (190 - s) + (p * 150)
 
-    def h1(self, node):
-        return (190 - sum(node.state))
+    @staticmethod
+    def h1(node):
+        return 190 - sum(node.state)
 
     def goal_test(self, state):
         return self.check_solution(state, True)
@@ -128,78 +134,24 @@ class MagicHexagonProblem(search.Problem):
 
         return False
 
-    def check_rows_of_4(self, a, b, c, d):
+    @staticmethod
+    def check_rows_of_4(a, b, c, d):
         if b == 0 or c == 0 or a == 0 or d == 0:
             return True
         return a + b + c + d == 38
 
-    def check_rows_of_5(self, b, c, d, a, e):
+    @staticmethod
+    def check_rows_of_5(b, c, d, a, e):
         if a == 0 or b == 0 or c == 0 or d == 0 or e == 0:
             return True
         return a + b + c + d + e == 38
 
 
-class InstrumentedProblem(search.Problem):
-    """Delegates to a problem, and keeps statistics."""
-
-    def __init__(self, problem):
-        self.problem = problem
-        self.succs = self.goal_tests = self.states = self.heuristic = 0
-        self.found = None
-        self.start_time = time.time()
-
-    def actions(self, state):
-        self.succs += 1
-        return self.problem.actions(state)
-
-    def result(self, state, action):
-        self.states += 1
-        return self.problem.result(state, action)
-
-    def goal_test(self, state):
-        self.goal_tests += 1
-        result = self.problem.goal_test(state)
-        if result:
-            self.found = state
-        return result
-
-    def h(self, node):
-        self.heuristic += 1
-        return self.problem.h(node)
-
-    def path_cost(self, c, state1, action, state2):
-        return self.problem.path_cost(c, state1, action, state2)
-
-    def value(self, state):
-        return self.problem.value(state)
-
-    def __getattr__(self, attr):
-        return getattr(self.problem, attr)
-
-    def set_end_time(self, end_time):
-        self.end_time = end_time
-    def __repr__(self):
-        return '<%4d/%4d/%4d/%4d/%s/time: %s s>' % (self.succs, self.goal_tests,
-                                     self.states, self.heuristic, str(self.found)[:67], (self.end_time - self.start_time))
-
-def compare_searchers(problems, header,
-                      searchers=[search.depth_first_tree_search, search.depth_limited_search, search.depth_first_graph_search,
-                                 search.recursive_best_first_search, search.breadth_first_tree_search, search.iterative_deepening_search]):
-
-    def do(searcher, problem):
-        p = InstrumentedProblem(problem)
-        searcher(p)
-        p.set_end_time(time.time())
-        return p
-    table = [[search.name(s)] + [do(s, p) for p in problems] for s in searchers]
-    search.print_table(table, header)
-
-reversedNumbers = [19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1]
-
 mhp = MagicHexagonProblem()
+rmhp = MagicHexagonProblem([19, 18, 17, 16, 15, 14, 13, 12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1])
+
 start_time = time.time()
-print("----- Start")
-#search.compare_searchers([mhp], ["Searcher","Result"])
-print(search.iterative_deepening_search(mhp).solution())
+analysis.compare_searchers([mhp,rmhp])
+#print(search.hill_climbing(mhp).solution())
 #print(search.astar_search(mhp, mhp.h1).solution())
 print("--- Total %s seconds ---" % (time.time() - start_time))
